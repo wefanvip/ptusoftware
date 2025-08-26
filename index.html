@@ -82,16 +82,11 @@
             color: white;
             border-color: #667eea;
         }
-
-        .tool-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .color-picker-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        
+        .tool-btn.pen-active {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
         }
 
         .color-display {
@@ -112,54 +107,30 @@
             cursor: pointer;
         }
 
-        .brush-size-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .brush-size-control input {
-            width: 100px;
-        }
-
-        .brush-size-control span {
-            font-size: 14px;
-            color: #495057;
-            min-width: 40px;
-        }
-
-        .text-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .text-controls input[type="text"] {
-            padding: 8px 12px;
-            border: 2px solid #dee2e6;
+        .sampled-color-display {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #28a745;
             border-radius: 8px;
-            font-size: 14px;
-            width: 200px;
+            margin-left: 10px;
+            position: relative;
         }
 
-        .text-controls input[type="number"] {
-            padding: 8px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            width: 80px;
-        }
-
-        .text-controls select {
-            padding: 8px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
+        .sampled-color-display::after {
+            content: '取样色';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
         }
 
         .main-content {
             padding: 20px;
             background: #f8f9fa;
+            position: relative;
         }
 
         .upload-area {
@@ -177,69 +148,101 @@
             background: #f8f9ff;
         }
 
-        .upload-area svg {
-            width: 60px;
-            height: 60px;
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-
         .upload-area h3 {
             color: #495057;
-            margin-bottom: 10px;
-        }
-
-        .upload-area p {
-            color: #6c757d;
+            margin: 20px 0 10px 0;
         }
 
         #fileInput {
             display: none;
         }
 
-        .canvas-container {
+        .canvas-wrapper {
             position: relative;
-            display: inline-block;
-            margin: 0 auto;
-            border: 2px solid #dee2e6;
+            width: 100%;
+            height: 600px;
+            overflow: auto;
+            background: #e0e0e0;
             border-radius: 10px;
-            overflow: visible;
+            border: 2px solid #dee2e6;
+            cursor: grab;
+        }
+
+        .canvas-wrapper.dragging {
+            cursor: grabbing;
+        }
+
+        .canvas-container {
+            position: absolute;
+            display: inline-block;
+            border: 2px solid #dee2e6;
             background: white;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform-origin: top left;
+            transition: none;
         }
 
-        #canvas {
+        canvas {
             display: block;
-            cursor: crosshair;
-            max-width: 100%;
-            height: auto;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
         }
 
+        .zoom-controls {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .zoom-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
         .text-element {
             position: absolute;
             cursor: move;
-            padding: 4px;
+            padding: 5px;
             border: 2px dashed transparent;
-            transition: border-color 0.3s;
             user-select: none;
-            white-space: nowrap;
+            transition: border-color 0.2s;
         }
-
+        
         .text-element:hover {
-            border-color: rgba(102, 126, 234, 0.5);
-            background: rgba(102, 126, 234, 0.05);
+            border-color: #667eea;
         }
-
+        
         .text-element.selected {
             border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
         }
-
-        .text-element .text-content {
-            display: inline-block;
-            outline: none;
+        
+        .text-element.editing {
+            border-color: #28a745;
+            cursor: text;
         }
-
+        
         .resize-handle {
             position: absolute;
             width: 10px;
@@ -247,59 +250,53 @@
             background: #667eea;
             border: 2px solid white;
             border-radius: 50%;
-            cursor: nwse-resize;
+            cursor: se-resize;
+            bottom: -5px;
+            right: -5px;
             display: none;
         }
-
+        
         .text-element.selected .resize-handle {
             display: block;
         }
 
-        .resize-handle.top-left {
-            top: -5px;
-            left: -5px;
-            cursor: nwse-resize;
+        .zoom-level {
+            text-align: center;
+            font-size: 14px;
+            color: #495057;
+            font-weight: bold;
         }
 
-        .resize-handle.top-right {
-            top: -5px;
-            right: -5px;
-            cursor: nesw-resize;
-        }
-
-        .resize-handle.bottom-left {
-            bottom: -5px;
-            left: -5px;
-            cursor: nesw-resize;
-        }
-
-        .resize-handle.bottom-right {
-            bottom: -5px;
-            right: -5px;
-            cursor: nwse-resize;
-        }
-
-        .delete-btn {
-            position: absolute;
-            top: -30px;
-            right: -5px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 12px;
-            cursor: pointer;
+        .color-preview {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            background: white;
+            pointer-events: none;
+            z-index: 10000;
             display: none;
-            z-index: 1000;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
-        .text-element.selected .delete-btn {
-            display: block;
+        .color-preview canvas {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
         }
 
-        .delete-btn:hover {
-            background: #c82333;
+        .color-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
         }
 
         .action-buttons {
@@ -307,6 +304,7 @@
             gap: 10px;
             justify-content: center;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -324,20 +322,9 @@
             color: white;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-
         .btn-secondary {
             background: #6c757d;
             color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
         }
 
         .btn-success {
@@ -345,110 +332,33 @@
             color: white;
         }
 
-        .btn-success:hover {
-            background: #218838;
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
-        }
-
-        .btn-warning {
-            background: #ffc107;
-            color: #212529;
-        }
-
-        .btn-warning:hover {
-            background: #e0a800;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
-        }
-
-        .instructions {
-            background: #e9ecef;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-        }
-
-        .instructions h4 {
-            color: #495057;
-            margin-bottom: 10px;
-        }
-
-        .instructions ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .instructions li {
-            padding: 5px 0;
-            color: #6c757d;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .instructions li::before {
-            content: "✓";
-            color: #28a745;
-            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .hidden {
             display: none !important;
         }
 
-        .cursor-indicator {
-            position: fixed;
-            border: 2px solid #667eea;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transition: all 0.1s;
-            opacity: 0;
-        }
-
-        .tips-panel {
+        .tips {
             position: fixed;
             bottom: 20px;
-            right: 20px;
-            background: rgba(102, 126, 234, 0.95);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
             color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 20px;
             font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            max-width: 300px;
+            z-index: 10000;
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
         }
 
-        .tips-panel.show {
+        .tips.show {
             opacity: 1;
-        }
-
-        @media (max-width: 768px) {
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .tool-group {
-                flex-wrap: wrap;
-            }
-
-            .text-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .text-controls input[type="text"] {
-                width: 100%;
-            }
-
-            .tips-panel {
-                display: none;
-            }
         }
     </style>
 </head>
@@ -456,292 +366,371 @@
     <div class="container">
         <div class="header">
             <h1>🎨 图片文字编辑器 Pro</h1>
-            <p>消除文字 · 添加文字 · 自由调整 · 颜色吸取</p>
+            <p>精准取色 · 智能消除 · 局部放大 · 自由编辑</p>
         </div>
 
         <div class="toolbar hidden" id="toolbar">
             <div class="tool-group">
-                <button class="tool-btn" id="eraserTool" title="消除笔">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    消除笔
-                </button>
-                <button class="tool-btn" id="textTool" title="文字工具">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    文字
-                </button>
-                <button class="tool-btn" id="selectTool" title="选择工具">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2z" />
-                    </svg>
-                    选择
-                </button>
-                <button class="tool-btn" id="colorPickerTool" title="吸管工具">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                    </svg>
-                    吸管
-                </button>
+                <button class="tool-btn active" id="eraserTool">消除笔</button>
+                <button class="tool-btn" id="paintTool">画笔</button>
+                <button class="tool-btn" id="textTool">文字</button>
+                <button class="tool-btn" id="colorPickerTool">吸管</button>
+                <button class="tool-btn" id="dragTool">拖动</button>
             </div>
 
             <div class="tool-group">
-                <div class="color-picker-wrapper">
-                    <label>颜色:</label>
-                    <div class="color-display" id="colorDisplay">
-                        <input type="color" id="colorPicker" value="#000000">
-                    </div>
-                </div>
+                <label>笔工具:</label>
+                <button class="tool-btn" id="penTool">钢笔</button>
+                <button class="tool-btn" id="pencilTool">铅笔</button>
+                <button class="tool-btn" id="markerTool">马克笔</button>
+                <button class="tool-btn" id="brushTool">画刷</button>
             </div>
 
-            <div class="tool-group brush-size-control" id="brushSizeControl" style="display: none;">
+            <div class="tool-group">
+                <label>画笔颜色:</label>
+                <div class="color-display" id="colorDisplay" style="background: #000000;">
+                    <input type="color" id="colorPicker" value="#000000">
+                </div>
+                <div class="sampled-color-display hidden" id="sampledColorDisplay"></div>
+            </div>
+
+            <div class="tool-group" id="brushSizeControl">
                 <label>画笔大小:</label>
-                <input type="range" id="brushSize" min="5" max="50" value="20">
+                <input type="range" id="brushSize" min="1" max="50" value="20">
                 <span id="brushSizeValue">20px</span>
             </div>
 
-            <div class="tool-group text-controls" id="textControls" style="display: none;">
-                <input type="text" id="textInput" placeholder="输入文字内容">
-                <select id="fontFamily">
-                    <option value="Arial">Arial</option>
-                    <option value="'Microsoft YaHei'">微软雅黑</option>
-                    <option value="'SimSun'">宋体</option>
-                    <option value="'SimHei'">黑体</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="'Times New Roman'">Times New Roman</option>
-                </select>
-                <input type="number" id="fontSize" placeholder="字号" value="24" min="10" max="100">
-                <button class="tool-btn" id="addTextBtn" style="background: #28a745; color: white; border-color: #28a745;">
-                    添加文字
-                </button>
+            <div class="tool-group hidden" id="eraserModeControl">
+                <label>消除模式:</label>
+                <button class="tool-btn" id="autoColorMode" style="background: #28a745; color: white;">自动取色</button>
+                <button class="tool-btn" id="fixedColorMode">固定颜色</button>
+            </div>
+
+            <div class="tool-group hidden" id="textControls">
+                <input type="text" id="textInput" placeholder="输入文字内容" style="padding: 8px; border: 2px solid #dee2e6; border-radius: 8px;">
+                <input type="number" id="fontSize" value="24" min="10" max="100" style="padding: 8px; border: 2px solid #dee2e6; border-radius: 8px; width: 80px;">
+                <button class="tool-btn" id="addTextBtn">添加文字</button>
             </div>
         </div>
 
         <div class="main-content">
             <div class="upload-area" id="uploadArea">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                    <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <h3>点击或拖拽上传图片</h3>
-                <p>支持 JPG, PNG, GIF 格式</p>
+                <p style="color: #6c757d;">支持 JPG, PNG, GIF 格式</p>
                 <input type="file" id="fileInput" accept="image/*">
             </div>
 
-            <div class="canvas-container hidden" id="canvasContainer">
-                <canvas id="canvas"></canvas>
+            <div class="canvas-wrapper hidden" id="canvasWrapper">
+                <div class="canvas-container" id="canvasContainer">
+                    <canvas id="canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="zoom-controls hidden" id="zoomControls">
+                <button class="zoom-btn" id="zoomInBtn">+</button>
+                <div class="zoom-level" id="zoomLevel">100%</div>
+                <button class="zoom-btn" id="zoomOutBtn">−</button>
+                <button class="zoom-btn" id="zoomResetBtn">⟲</button>
             </div>
 
             <div class="action-buttons hidden" id="actionButtons">
-                <button class="btn btn-secondary" id="undoBtn">↶ 撤销</button>
-                <button class="btn btn-secondary" id="clearBtn">清空编辑</button>
-                <button class="btn btn-warning" id="mergeTextBtn">合并文字</button>
-                <button class="btn btn-primary" id="newImageBtn">上传新图片</button>
-                <button class="btn btn-success" id="downloadBtn">下载图片</button>
-            </div>
-
-            <div class="instructions">
-                <h4>使用说明：</h4>
-                <ul>
-                    <li>消除笔：点击文字旁边的背景取色，然后涂抹覆盖文字</li>
-                    <li>文字工具：输入内容后点击"添加文字"，文字可随时移动和调整大小</li>
-                    <li>选择工具：点击选择已添加的文字，可以移动、调整大小或删除</li>
-                    <li>吸管工具：点击图片任意位置吸取颜色</li>
-                    <li>拖动文字四角可以调整大小，双击文字可以编辑内容</li>
-                    <li>合并文字：将所有文字固定到图片上（合并后无法再调整）</li>
-                </ul>
+                <button class="btn btn-secondary" id="undoBtn">撤销</button>
+                <button class="btn btn-secondary" id="clearBtn">清空</button>
+                <button class="btn btn-primary" id="newImageBtn">新图片</button>
+                <button class="btn btn-success" id="downloadBtn">下载</button>
             </div>
         </div>
     </div>
 
-    <div class="cursor-indicator" id="cursorIndicator"></div>
-    <div class="tips-panel" id="tipsPanel"></div>
+    <div class="color-preview" id="colorPreview">
+        <canvas id="previewCanvas"></canvas>
+        <div class="color-info" id="colorInfo">RGB: 0,0,0</div>
+    </div>
+
+    <div class="tips" id="tips"></div>
 
     <script>
-        class ImageTextEditor {
+        class ImageEditor {
             constructor() {
                 this.canvas = document.getElementById('canvas');
-                this.ctx = this.canvas.getContext('2d');
+                this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
                 this.canvasContainer = document.getElementById('canvasContainer');
-                this.currentTool = null;
+                this.canvasWrapper = document.getElementById('canvasWrapper');
+                this.currentTool = 'eraser';
                 this.isDrawing = false;
                 this.currentColor = '#000000';
                 this.brushSize = 20;
                 this.fontSize = 24;
-                this.fontFamily = 'Arial';
                 this.originalImage = null;
                 this.history = [];
                 this.historyStep = -1;
                 this.sampledColor = null;
-                this.isEraserSampling = false;
-                this.textElements = [];
-                this.selectedText = null;
+                this.zoomLevel = 1;
                 this.isDragging = false;
-                this.isResizing = false;
+                this.dragStart = { x: 0, y: 0 };
+                this.scrollStart = { x: 0, y: 0 };
+                this.eraserMode = 'auto'; // 'auto' or 'fixed'
+                this.hasAutoSampled = false; // Track if we've auto-sampled for current stroke
+                this.textElements = []; // Store text elements
+                this.selectedTextElement = null;
+                this.isDraggingText = false;
                 this.dragOffset = { x: 0, y: 0 };
-                this.resizeHandle = null;
+                this.isResizing = false;
+                this.penType = 'pen'; // 'pen', 'pencil', 'marker', 'brush'
                 
-                this.initializeEventListeners();
-            }
-
-            initializeEventListeners() {
-                // File upload
-                const uploadArea = document.getElementById('uploadArea');
-                const fileInput = document.getElementById('fileInput');
+                // Color preview
+                this.colorPreview = document.getElementById('colorPreview');
+                this.previewCanvas = document.getElementById('previewCanvas');
+                this.previewCtx = this.previewCanvas.getContext('2d');
+                this.previewCanvas.width = 150;
+                this.previewCanvas.height = 150;
                 
-                uploadArea.addEventListener('click', () => fileInput.click());
-                uploadArea.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    uploadArea.style.borderColor = '#667eea';
-                    uploadArea.style.background = '#f8f9ff';
-                });
-                
-                uploadArea.addEventListener('dragleave', () => {
-                    uploadArea.style.borderColor = '#dee2e6';
-                    uploadArea.style.background = 'white';
-                });
-                
-                uploadArea.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    uploadArea.style.borderColor = '#dee2e6';
-                    uploadArea.style.background = 'white';
-                    
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0 && files[0].type.startsWith('image/')) {
-                        this.loadImage(files[0]);
-                    }
-                });
-                
-                fileInput.addEventListener('change', (e) => {
-                    if (e.target.files.length > 0) {
-                        this.loadImage(e.target.files[0]);
-                    }
-                });
-
-                // Tool buttons
-                document.getElementById('eraserTool').addEventListener('click', () => {
-                    this.setTool('eraser');
-                    this.showTip('点击背景取色，然后涂抹文字');
-                });
-                
-                document.getElementById('textTool').addEventListener('click', () => {
-                    this.setTool('text');
-                    this.showTip('输入文字后点击"添加文字"按钮');
-                });
-                
-                document.getElementById('selectTool').addEventListener('click', () => {
-                    this.setTool('select');
-                    this.showTip('点击文字选择，拖动移动，拖动角落调整大小');
-                });
-                
-                document.getElementById('colorPickerTool').addEventListener('click', () => {
-                    this.setTool('colorPicker');
-                    this.showTip('点击图片吸取颜色');
-                });
-
-                // Add text button
-                document.getElementById('addTextBtn').addEventListener('click', () => {
-                    this.addTextElement();
-                });
-
-                // Text input enter key
-                document.getElementById('textInput').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.addTextElement();
-                    }
-                });
-
-                // Color picker
-                const colorPicker = document.getElementById('colorPicker');
-                const colorDisplay = document.getElementById('colorDisplay');
-                
-                colorPicker.addEventListener('change', (e) => {
-                    this.currentColor = e.target.value;
-                    colorDisplay.style.backgroundColor = this.currentColor;
-                    
-                    // Update selected text color if any
-                    if (this.selectedText) {
-                        this.selectedText.style.color = this.currentColor;
-                    }
-                });
-
-                // Brush size
-                const brushSizeInput = document.getElementById('brushSize');
-                const brushSizeValue = document.getElementById('brushSizeValue');
-                
-                brushSizeInput.addEventListener('input', (e) => {
-                    this.brushSize = parseInt(e.target.value);
-                    brushSizeValue.textContent = `${this.brushSize}px`;
-                    this.updateCursorIndicator();
-                });
-
-                // Font size
-                document.getElementById('fontSize').addEventListener('change', (e) => {
-                    this.fontSize = parseInt(e.target.value);
-                    
-                    // Update selected text size if any
-                    if (this.selectedText) {
-                        this.selectedText.style.fontSize = `${this.fontSize}px`;
-                    }
-                });
-                
-                // Font family
-                document.getElementById('fontFamily').addEventListener('change', (e) => {
-                    this.fontFamily = e.target.value;
-                    
-                    // Update selected text font if any
-                    if (this.selectedText) {
-                        this.selectedText.style.fontFamily = this.fontFamily;
-                    }
-                });
-
-                // Canvas events
-                this.canvas.addEventListener('mousedown', this.handleCanvasMouseDown.bind(this));
-                this.canvas.addEventListener('mousemove', this.handleCanvasMouseMove.bind(this));
-                this.canvas.addEventListener('mouseup', this.handleCanvasMouseUp.bind(this));
-                this.canvas.addEventListener('mouseleave', this.handleCanvasMouseLeave.bind(this));
-
-                // Touch events for mobile
-                this.canvas.addEventListener('touchstart', this.handleTouchStart.bind(this));
-                this.canvas.addEventListener('touchmove', this.handleTouchMove.bind(this));
-                this.canvas.addEventListener('touchend', this.handleTouchEnd.bind(this));
-
-                // Action buttons
-                document.getElementById('undoBtn').addEventListener('click', () => this.undo());
-                document.getElementById('clearBtn').addEventListener('click', () => this.clearEdits());
-                document.getElementById('mergeTextBtn').addEventListener('click', () => this.mergeText());
-                document.getElementById('newImageBtn').addEventListener('click', () => this.uploadNewImage());
-                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadImage());
-
-                // Cursor indicator
-                document.addEventListener('mousemove', (e) => {
-                    const indicator = document.getElementById('cursorIndicator');
-                    if (this.currentTool === 'eraser' && this.isOverCanvas(e)) {
-                        indicator.style.left = `${e.clientX}px`;
-                        indicator.style.top = `${e.clientY}px`;
-                        indicator.style.opacity = '0.5';
-                    } else {
-                        indicator.style.opacity = '0';
-                    }
-                });
-
-                // Global click handler for deselecting text
-                document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.text-element') && !e.target.closest('.toolbar') && this.selectedText) {
-                        this.deselectText();
-                    }
-                });
+                this.initEvents();
             }
 
             showTip(message) {
-                const tipsPanel = document.getElementById('tipsPanel');
-                tipsPanel.textContent = message;
-                tipsPanel.classList.add('show');
+                const tips = document.getElementById('tips');
+                tips.textContent = message;
+                tips.classList.add('show');
+                setTimeout(() => tips.classList.remove('show'), 2000);
+            }
+
+            getAdvancedAverageColor(x, y, radius = 5) {
+                // Enhanced color sampling for better accuracy on dark backgrounds
+                const size = radius * 2 + 1;
+                const startX = Math.max(0, Math.floor(x - radius));
+                const startY = Math.max(0, Math.floor(y - radius));
+                const endX = Math.min(this.canvas.width, Math.ceil(x + radius));
+                const endY = Math.min(this.canvas.height, Math.ceil(y + radius));
                 
-                setTimeout(() => {
-                    tipsPanel.classList.remove('show');
-                }, 3000);
+                const width = endX - startX;
+                const height = endY - startY;
+                
+                if (width <= 0 || height <= 0) {
+                    return this.getPixelColor(x, y);
+                }
+                
+                const imageData = this.ctx.getImageData(startX, startY, width, height);
+                const data = imageData.data;
+                
+                // Use weighted average based on distance from center
+                let r = 0, g = 0, b = 0;
+                let totalWeight = 0;
+                
+                for (let py = 0; py < height; py++) {
+                    for (let px = 0; px < width; px++) {
+                        const idx = (py * width + px) * 4;
+                        
+                        // Calculate distance from center point
+                        const dx = (startX + px) - x;
+                        const dy = (startY + py) - y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // Weight inversely proportional to distance
+                        const weight = distance <= radius ? (1 - distance / radius) : 0;
+                        
+                        if (weight > 0) {
+                            r += data[idx] * weight;
+                            g += data[idx + 1] * weight;
+                            b += data[idx + 2] * weight;
+                            totalWeight += weight;
+                        }
+                    }
+                }
+                
+                if (totalWeight > 0) {
+                    r = Math.round(r / totalWeight);
+                    g = Math.round(g / totalWeight);
+                    b = Math.round(b / totalWeight);
+                } else {
+                    // Fallback to single pixel
+                    return this.getPixelColor(x, y);
+                }
+                
+                return { r, g, b };
+            }
+
+            getPixelColor(x, y) {
+                const pixel = this.ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data;
+                return {
+                    r: pixel[0],
+                    g: pixel[1],
+                    b: pixel[2]
+                };
+            }
+
+            initEvents() {
+                // Upload
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+                
+                uploadArea.onclick = () => fileInput.click();
+                
+                uploadArea.ondragover = (e) => {
+                    e.preventDefault();
+                    uploadArea.style.borderColor = '#667eea';
+                };
+                
+                uploadArea.ondragleave = () => {
+                    uploadArea.style.borderColor = '#dee2e6';
+                };
+                
+                uploadArea.ondrop = (e) => {
+                    e.preventDefault();
+                    uploadArea.style.borderColor = '#dee2e6';
+                    if (e.dataTransfer.files.length > 0) {
+                        this.loadImage(e.dataTransfer.files[0]);
+                    }
+                };
+                
+                fileInput.onchange = (e) => {
+                    if (e.target.files.length > 0) {
+                        this.loadImage(e.target.files[0]);
+                    }
+                };
+
+                // Tools
+                document.getElementById('eraserTool').onclick = () => this.setTool('eraser');
+                document.getElementById('paintTool').onclick = () => this.setTool('paint');
+                document.getElementById('textTool').onclick = () => this.setTool('text');
+                document.getElementById('colorPickerTool').onclick = () => this.setTool('colorPicker');
+                document.getElementById('dragTool').onclick = () => this.setTool('drag');
+
+                // Pen tools
+                document.getElementById('penTool').onclick = () => this.setPenType('pen');
+                document.getElementById('pencilTool').onclick = () => this.setPenType('pencil');
+                document.getElementById('markerTool').onclick = () => this.setPenType('marker');
+                document.getElementById('brushTool').onclick = () => this.setPenType('brush');
+
+                // Eraser mode controls
+                document.getElementById('autoColorMode').onclick = () => {
+                    this.eraserMode = 'auto';
+                    document.getElementById('autoColorMode').style.background = '#28a745';
+                    document.getElementById('autoColorMode').style.color = 'white';
+                    document.getElementById('fixedColorMode').style.background = 'white';
+                    document.getElementById('fixedColorMode').style.color = 'black';
+                    this.showTip('自动取色模式 - 点击背景自动取色');
+                };
+
+                document.getElementById('fixedColorMode').onclick = () => {
+                    this.eraserMode = 'fixed';
+                    document.getElementById('fixedColorMode').style.background = '#28a745';
+                    document.getElementById('fixedColorMode').style.color = 'white';
+                    document.getElementById('autoColorMode').style.background = 'white';
+                    document.getElementById('autoColorMode').style.color = 'black';
+                    this.showTip('固定颜色模式 - 使用选定的颜色');
+                };
+
+                // Color
+                const colorPicker = document.getElementById('colorPicker');
+                colorPicker.onchange = (e) => {
+                    this.currentColor = e.target.value;
+                    document.getElementById('colorDisplay').style.background = this.currentColor;
+                };
+
+                // Brush size
+                const brushSizeInput = document.getElementById('brushSize');
+                brushSizeInput.oninput = (e) => {
+                    this.brushSize = parseInt(e.target.value);
+                    document.getElementById('brushSizeValue').textContent = `${this.brushSize}px`;
+                };
+
+                // Font size
+                document.getElementById('fontSize').onchange = (e) => {
+                    this.fontSize = parseInt(e.target.value);
+                };
+
+                // Add text
+                document.getElementById('addTextBtn').onclick = () => {
+                    const text = document.getElementById('textInput').value;
+                    if (text) {
+                        this.addTextElement(text, 50, 50);
+                        document.getElementById('textInput').value = '';
+                        this.showTip('文字已添加');
+                    }
+                };
+
+                // Canvas events
+                this.canvas.onmousedown = (e) => this.startDraw(e);
+                this.canvas.onmousemove = (e) => this.draw(e);
+                this.canvas.onmouseup = () => this.stopDraw();
+                this.canvas.onmouseleave = () => this.stopDraw();
+
+                // Canvas wrapper drag events
+                this.canvasWrapper.onmousedown = (e) => {
+                    if (this.currentTool === 'drag' || (e.ctrlKey || e.metaKey)) {
+                        this.isDragging = true;
+                        this.canvasWrapper.classList.add('dragging');
+                        this.dragStart = { x: e.clientX, y: e.clientY };
+                        this.scrollStart = { 
+                            x: this.canvasWrapper.scrollLeft, 
+                            y: this.canvasWrapper.scrollTop 
+                        };
+                        e.preventDefault();
+                    }
+                };
+
+                document.onmousemove = (e) => {
+                    if (this.isDragging) {
+                        const dx = this.dragStart.x - e.clientX;
+                        const dy = this.dragStart.y - e.clientY;
+                        this.canvasWrapper.scrollLeft = this.scrollStart.x + dx;
+                        this.canvasWrapper.scrollTop = this.scrollStart.y + dy;
+                    }
+
+                    // Move text element
+                    if (this.isDraggingText && this.selectedTextElement) {
+                        const containerRect = this.canvasContainer.getBoundingClientRect();
+                        const newX = e.clientX - containerRect.left - this.dragOffset.x;
+                        const newY = e.clientY - containerRect.top - this.dragOffset.y;
+                        
+                        this.selectedTextElement.style.left = `${newX}px`;
+                        this.selectedTextElement.style.top = `${newY}px`;
+                    }
+
+                    // Show color preview when hovering
+                    if ((this.currentTool === 'eraser' || this.currentTool === 'colorPicker') && this.isOverCanvas(e)) {
+                        this.showColorPreview(e);
+                    } else {
+                        this.colorPreview.style.display = 'none';
+                    }
+                };
+
+                document.onmouseup = () => {
+                    this.isDragging = false;
+                    this.canvasWrapper.classList.remove('dragging');
+                    
+                    if (this.isDraggingText) {
+                        this.isDraggingText = false;
+                        this.saveHistory();
+                    }
+                };
+
+                // Zoom
+                document.getElementById('zoomInBtn').onclick = () => this.zoom(0.25);
+                document.getElementById('zoomOutBtn').onclick = () => this.zoom(-0.25);
+                document.getElementById('zoomResetBtn').onclick = () => this.zoomReset();
+
+                // Mouse wheel zoom
+                this.canvas.onwheel = (e) => {
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        if (e.deltaY < 0) {
+                            this.zoom(0.1);
+                        } else {
+                            this.zoom(-0.1);
+                        }
+                    }
+                };
+
+                // Actions
+                document.getElementById('undoBtn').onclick = () => this.undo();
+                document.getElementById('clearBtn').onclick = () => this.clear();
+                document.getElementById('newImageBtn').onclick = () => fileInput.click();
+                document.getElementById('downloadBtn').onclick = () => this.download();
             }
 
             isOverCanvas(e) {
@@ -750,15 +739,51 @@
                        e.clientY >= rect.top && e.clientY <= rect.bottom;
             }
 
-            updateCursorIndicator() {
-                const indicator = document.getElementById('cursorIndicator');
-                indicator.style.width = `${this.brushSize}px`;
-                indicator.style.height = `${this.brushSize}px`;
-                indicator.style.marginLeft = `-${this.brushSize / 2}px`;
-                indicator.style.marginTop = `-${this.brushSize / 2}px`;
+            showColorPreview(e) {
+                const pos = this.getMousePos(e);
+                const color = this.getAdvancedAverageColor(pos.x, pos.y);
+                
+                // Position preview
+                this.colorPreview.style.left = `${e.clientX + 20}px`;
+                this.colorPreview.style.top = `${e.clientY - 75}px`;
+                this.colorPreview.style.display = 'block';
+                
+                // Draw magnified area
+                const size = 15;
+                const scale = 10;
+                this.previewCtx.imageSmoothingEnabled = false;
+                
+                const sx = Math.max(0, pos.x - size/2);
+                const sy = Math.max(0, pos.y - size/2);
+                
+                this.previewCtx.clearRect(0, 0, 150, 150);
+                this.previewCtx.drawImage(
+                    this.canvas,
+                    sx, sy, size, size,
+                    0, 0, 150, 150
+                );
+                
+                // Draw crosshair
+                this.previewCtx.strokeStyle = '#ff0000';
+                this.previewCtx.lineWidth = 1;
+                this.previewCtx.beginPath();
+                this.previewCtx.moveTo(75, 0);
+                this.previewCtx.lineTo(75, 150);
+                this.previewCtx.moveTo(0, 75);
+                this.previewCtx.lineTo(150, 75);
+                this.previewCtx.stroke();
+                
+                // Update color info
+                document.getElementById('colorInfo').textContent = 
+                    `RGB: ${color.r}, ${color.g}, ${color.b}`;
             }
 
             loadImage(file) {
+                if (!file.type.startsWith('image/')) {
+                    this.showTip('请选择图片文件');
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const img = new Image();
@@ -767,397 +792,431 @@
                         this.canvas.width = img.width;
                         this.canvas.height = img.height;
                         this.ctx.drawImage(img, 0, 0);
-                        
-                        // Save initial state
                         this.saveHistory();
-                        
-                        // Clear any existing text elements
-                        this.clearTextElements();
                         
                         // Show editor
                         document.getElementById('uploadArea').classList.add('hidden');
                         document.getElementById('toolbar').classList.remove('hidden');
-                        document.getElementById('canvasContainer').classList.remove('hidden');
+                        document.getElementById('canvasWrapper').classList.remove('hidden');
                         document.getElementById('actionButtons').classList.remove('hidden');
+                        document.getElementById('zoomControls').classList.remove('hidden');
                         
-                        // Set default tool
-                        this.setTool('select');
+                        // Center the canvas
+                        this.centerCanvas();
+                        this.showTip('图片已加载，可以开始编辑');
                     };
                     img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
 
+            centerCanvas() {
+                setTimeout(() => {
+                    const wrapper = this.canvasWrapper;
+                    const container = this.canvasContainer;
+                    wrapper.scrollLeft = (container.offsetWidth - wrapper.clientWidth) / 2;
+                    wrapper.scrollTop = (container.offsetHeight - wrapper.clientHeight) / 2;
+                }, 100);
+            }
+
             setTool(tool) {
                 this.currentTool = tool;
-                this.isEraserSampling = false;
-                this.sampledColor = null;
+                this.hasAutoSampled = false; // Reset auto-sample flag when changing tools
+                this.deselectAllText();
                 
-                // Update button states
                 document.querySelectorAll('.tool-btn').forEach(btn => {
                     btn.classList.remove('active');
                 });
                 
-                // Hide all tool-specific controls
-                document.getElementById('brushSizeControl').style.display = 'none';
-                document.getElementById('textControls').style.display = 'none';
+                // Hide all tool-specific controls first
+                document.getElementById('brushSizeControl').classList.add('hidden');
+                document.getElementById('textControls').classList.add('hidden');
+                document.getElementById('eraserModeControl').classList.add('hidden');
                 
-                // Show relevant controls and set active button
-                switch(tool) {
-                    case 'eraser':
-                        document.getElementById('eraserTool').classList.add('active');
-                        document.getElementById('brushSizeControl').style.display = 'flex';
-                        this.canvas.style.cursor = 'crosshair';
-                        this.updateCursorIndicator();
+                if (tool === 'eraser') {
+                    document.getElementById('eraserTool').classList.add('active');
+                    document.getElementById('brushSizeControl').classList.remove('hidden');
+                    document.getElementById('eraserModeControl').classList.remove('hidden');
+                    this.canvas.style.cursor = 'crosshair';
+                    this.canvasWrapper.style.cursor = 'default';
+                    
+                    if (this.eraserMode === 'auto') {
+                        this.showTip('消除笔 - 点击背景自动取色');
+                    } else {
+                        this.showTip('消除笔 - 使用固定颜色');
+                    }
+                } else if (tool === 'paint') {
+                    document.getElementById('paintTool').classList.add('active');
+                    document.getElementById('brushSizeControl').classList.remove('hidden');
+                    this.canvas.style.cursor = 'crosshair';
+                    this.canvasWrapper.style.cursor = 'default';
+                    this.showTip('画笔 - 使用选定颜色绘制');
+                } else if (tool === 'text') {
+                    document.getElementById('textTool').classList.add('active');
+                    document.getElementById('textControls').classList.remove('hidden');
+                    this.canvas.style.cursor = 'text';
+                    this.canvasWrapper.style.cursor = 'default';
+                    this.showTip('点击添加文字，双击编辑文字');
+                } else if (tool === 'colorPicker') {
+                    document.getElementById('colorPickerTool').classList.add('active');
+                    this.canvas.style.cursor = 'crosshair';
+                    this.canvasWrapper.style.cursor = 'default';
+                    this.showTip('点击吸取颜色');
+                } else if (tool === 'drag') {
+                    document.getElementById('dragTool').classList.add('active');
+                    this.canvas.style.cursor = 'grab';
+                    this.canvasWrapper.style.cursor = 'grab';
+                    this.showTip('拖动查看图片不同区域');
+                }
+            }
+
+            setPenType(type) {
+                this.penType = type;
+                
+                // Update pen tool buttons
+                document.querySelectorAll('#penTool, #pencilTool, #markerTool, #brushTool').forEach(btn => {
+                    btn.classList.remove('pen-active');
+                });
+                
+                document.getElementById(type + 'Tool').classList.add('pen-active');
+                
+                // Update brush settings based on pen type
+                switch(type) {
+                    case 'pen':
+                        this.ctx.lineCap = 'round';
+                        this.ctx.lineJoin = 'round';
+                        this.ctx.globalAlpha = 1.0;
+                        this.showTip('钢笔 - 精确绘制');
                         break;
-                    case 'text':
-                        document.getElementById('textTool').classList.add('active');
-                        document.getElementById('textControls').style.display = 'flex';
-                        this.canvas.style.cursor = 'text';
+                    case 'pencil':
+                        this.ctx.lineCap = 'round';
+                        this.ctx.lineJoin = 'round';
+                        this.ctx.globalAlpha = 0.8;
+                        this.showTip('铅笔 - 柔和绘制');
                         break;
-                    case 'select':
-                        document.getElementById('selectTool').classList.add('active');
-                        this.canvas.style.cursor = 'default';
+                    case 'marker':
+                        this.ctx.lineCap = 'square';
+                        this.ctx.lineJoin = 'round';
+                        this.ctx.globalAlpha = 0.6;
+                        this.showTip('马克笔 - 半透明标记');
                         break;
-                    case 'colorPicker':
-                        document.getElementById('colorPickerTool').classList.add('active');
-                        this.canvas.style.cursor = 'crosshair';
+                    case 'brush':
+                        this.ctx.lineCap = 'round';
+                        this.ctx.lineJoin = 'round';
+                        this.ctx.globalAlpha = 0.9;
+                        this.showTip('画刷 - 柔和笔触');
                         break;
                 }
             }
 
-            addTextElement() {
-                const text = document.getElementById('textInput').value.trim();
-                if (!text) {
-                    this.showTip('请先输入文字内容');
-                    return;
-                }
-                
-                const textElement = document.createElement('div');
-                textElement.className = 'text-element';
-                textElement.style.position = 'absolute';
-                textElement.style.left = '50px';
-                textElement.style.top = '50px';
-                textElement.style.color = this.currentColor;
-                textElement.style.fontSize = `${this.fontSize}px`;
-                textElement.style.fontFamily = this.fontFamily;
-                textElement.style.zIndex = 100 + this.textElements.length;
-                
-                // Text content
-                const textContent = document.createElement('div');
-                textContent.className = 'text-content';
-                textContent.textContent = text;
-                textContent.contentEditable = false;
-                textElement.appendChild(textContent);
-                
-                // Resize handles
-                ['top-left', 'top-right', 'bottom-left', 'bottom-right'].forEach(position => {
-                    const handle = document.createElement('div');
-                    handle.className = `resize-handle ${position}`;
-                    textElement.appendChild(handle);
-                });
-                
-                // Delete button
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.textContent = '删除';
-                textElement.appendChild(deleteBtn);
-                
-                // Add event listeners
-                this.attachTextElementEvents(textElement);
-                
-                // Add to container
-                this.canvasContainer.appendChild(textElement);
-                this.textElements.push(textElement);
-                
-                // Clear input
-                document.getElementById('textInput').value = '';
-                
-                // Auto select the new text
-                this.selectText(textElement);
-                
-                this.showTip('文字已添加，可以拖动调整位置');
-            }
-            
-            attachTextElementEvents(textElement) {
-                const textContent = textElement.querySelector('.text-content');
-                const deleteBtn = textElement.querySelector('.delete-btn');
-                const resizeHandles = textElement.querySelectorAll('.resize-handle');
-                
-                // Select on click
-                textElement.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (this.currentTool === 'select') {
-                        this.selectText(textElement);
-                    }
-                });
-                
-                // Double click to edit
-                textContent.addEventListener('dblclick', (e) => {
-                    e.stopPropagation();
-                    textContent.contentEditable = true;
-                    textContent.focus();
-                    
-                    // Select all text
-                    const range = document.createRange();
-                    range.selectNodeContents(textContent);
-                    const selection = window.getSelection();
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                });
-                
-                // Finish editing on blur or enter
-                textContent.addEventListener('blur', () => {
-                    textContent.contentEditable = false;
-                });
-                
-                textContent.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        textContent.contentEditable = false;
-                    }
-                });
-                
-                // Drag to move
-                textElement.addEventListener('mousedown', (e) => {
-                    if (this.currentTool !== 'select') return;
-                    if (e.target.classList.contains('resize-handle')) return;
-                    if (e.target === deleteBtn) return;
-                    
-                    this.isDragging = true;
-                    const rect = textElement.getBoundingClientRect();
-                    const containerRect = this.canvasContainer.getBoundingClientRect();
-                    this.dragOffset = {
-                        x: e.clientX - rect.left,
-                        y: e.clientY - rect.top
-                    };
-                    
-                    e.preventDefault();
-                });
-                
-                // Resize handles
-                resizeHandles.forEach(handle => {
-                    handle.addEventListener('mousedown', (e) => {
-                        e.stopPropagation();
-                        this.isResizing = true;
-                        this.resizeHandle = handle;
-                        this.selectedText = textElement;
-                    });
-                });
-                
-                // Delete button
-                deleteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.deleteTextElement(textElement);
-                });
-            }
-            
-            selectText(textElement) {
-                // Deselect previous
-                if (this.selectedText) {
-                    this.selectedText.classList.remove('selected');
-                }
-                
-                // Select new
-                this.selectedText = textElement;
-                textElement.classList.add('selected');
-                
-                // Update controls to match selected text
-                const textContent = textElement.querySelector('.text-content');
-                const computedStyle = window.getComputedStyle(textElement);
-                
-                // Update color picker
-                const color = this.rgbToHex(computedStyle.color);
-                document.getElementById('colorPicker').value = color;
-                document.getElementById('colorDisplay').style.backgroundColor = color;
-                this.currentColor = color;
-                
-                // Update font size
-                const fontSize = parseInt(computedStyle.fontSize);
-                document.getElementById('fontSize').value = fontSize;
-                this.fontSize = fontSize;
-                
-                // Update font family
-                const fontFamily = computedStyle.fontFamily.replace(/['"]/g, '');
-                const fontSelect = document.getElementById('fontFamily');
-                for (let option of fontSelect.options) {
-                    if (option.value.replace(/['"]/g, '') === fontFamily) {
-                        fontSelect.value = option.value;
-                        this.fontFamily = option.value;
-                        break;
-                    }
-                }
-            }
-            
-            deselectText() {
-                if (this.selectedText) {
-                    this.selectedText.classList.remove('selected');
-                    this.selectedText = null;
-                }
-            }
-            
-            deleteTextElement(textElement) {
-                const index = this.textElements.indexOf(textElement);
-                if (index > -1) {
-                    this.textElements.splice(index, 1);
-                }
-                textElement.remove();
-                this.selectedText = null;
-                this.showTip('文字已删除');
-            }
-            
-            clearTextElements() {
-                this.textElements.forEach(element => element.remove());
-                this.textElements = [];
-                this.selectedText = null;
-            }
-            
-            mergeText() {
-                if (this.textElements.length === 0) {
-                    this.showTip('没有文字需要合并');
-                    return;
-                }
-                
-                // Draw all text elements onto canvas
-                this.textElements.forEach(textElement => {
-                    const textContent = textElement.querySelector('.text-content');
-                    const rect = textElement.getBoundingClientRect();
-                    const canvasRect = this.canvas.getBoundingClientRect();
-                    
-                    const x = rect.left - canvasRect.left;
-                    const y = rect.top - canvasRect.top + parseInt(window.getComputedStyle(textElement).fontSize);
-                    
-                    this.ctx.fillStyle = window.getComputedStyle(textElement).color;
-                    this.ctx.font = `${window.getComputedStyle(textElement).fontSize} ${window.getComputedStyle(textElement).fontFamily}`;
-                    this.ctx.fillText(textContent.textContent, x, y);
-                });
-                
-                // Remove all text elements
-                this.clearTextElements();
-                
-                // Save history
-                this.saveHistory();
-                
-                this.showTip('文字已合并到图片');
-            }
-            
             getMousePos(e) {
                 const rect = this.canvas.getBoundingClientRect();
-                const scaleX = this.canvas.width / rect.width;
-                const scaleY = this.canvas.height / rect.height;
+                const scaleX = this.canvas.width / (rect.width / this.zoomLevel);
+                const scaleY = this.canvas.height / (rect.height / this.zoomLevel);
                 
                 return {
-                    x: (e.clientX - rect.left) * scaleX,
-                    y: (e.clientY - rect.top) * scaleY
+                    x: (e.clientX - rect.left) * scaleX / this.zoomLevel,
+                    y: (e.clientY - rect.top) * scaleY / this.zoomLevel
                 };
             }
-            
-            handleCanvasMouseDown(e) {
+
+            startDraw(e) {
+                if (this.currentTool === 'drag') return;
+                
                 const pos = this.getMousePos(e);
                 
-                switch(this.currentTool) {
-                    case 'eraser':
-                        if (!this.isEraserSampling) {
-                            // Sample color from clicked position
-                            const imageData = this.ctx.getImageData(pos.x, pos.y, 1, 1);
-                            const pixel = imageData.data;
-                            this.sampledColor = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
-                            this.isEraserSampling = true;
-                            this.showTip('颜色已取样，开始涂抹');
-                        }
-                        this.isDrawing = true;
-                        this.ctx.globalCompositeOperation = 'source-over';
-                        this.ctx.strokeStyle = this.sampledColor;
-                        this.ctx.lineWidth = this.brushSize;
-                        this.ctx.lineCap = 'round';
-                        this.ctx.lineJoin = 'round';
-                        this.ctx.beginPath();
-                        this.ctx.moveTo(pos.x, pos.y);
-                        break;
-                        
-                    case 'colorPicker':
-                        const imageData = this.ctx.getImageData(pos.x, pos.y, 1, 1);
-                        const pixel = imageData.data;
-                        const hexColor = this.rgbToHex(pixel[0], pixel[1], pixel[2]);
-                        this.currentColor = hexColor;
-                        document.getElementById('colorPicker').value = hexColor;
-                        document.getElementById('colorDisplay').style.backgroundColor = hexColor;
-                        this.showTip(`颜色已吸取: ${hexColor}`);
-                        break;
-                }
-            }
-            
-            handleCanvasMouseMove(e) {
-                if (this.isDrawing && this.currentTool === 'eraser') {
-                    const pos = this.getMousePos(e);
-                    this.ctx.lineTo(pos.x, pos.y);
-                    this.ctx.stroke();
-                }
-            }
-            
-            handleCanvasMouseUp() {
-                if (this.isDrawing) {
-                    this.isDrawing = false;
-                    this.saveHistory();
-                }
-            }
-            
-            handleCanvasMouseLeave() {
-                if (this.isDrawing) {
-                    this.isDrawing = false;
-                    this.saveHistory();
-                }
-            }
-            
-            handleTouchStart(e) {
-                e.preventDefault();
-                const touch = e.touches[0];
-                const mouseEvent = new MouseEvent('mousedown', {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
-                });
-                this.canvas.dispatchEvent(mouseEvent);
-            }
-            
-            handleTouchMove(e) {
-                e.preventDefault();
-                const touch = e.touches[0];
-                const mouseEvent = new MouseEvent('mousemove', {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
-                });
-                this.canvas.dispatchEvent(mouseEvent);
-            }
-            
-            handleTouchEnd(e) {
-                e.preventDefault();
-                const mouseEvent = new MouseEvent('mouseup', {});
-                this.canvas.dispatchEvent(mouseEvent);
-            }
-            
-            rgbToHex(r, g, b) {
-                // Handle rgb string format
-                if (typeof r === 'string' && r.startsWith('rgb')) {
-                    const matches = r.match(/\d+/g);
-                    if (matches) {
-                        [r, g, b] = matches.map(Number);
+                if (this.currentTool === 'text') {
+                    // Add text at clicked position
+                    const text = document.getElementById('textInput').value;
+                    if (text) {
+                        this.addTextElement(text, pos.x, pos.y);
+                        document.getElementById('textInput').value = '';
+                        this.showTip('文字已添加');
+                    } else {
+                        this.showTip('请先输入文字内容');
                     }
+                    return;
                 }
                 
-                return '#' + [r, g, b].map(x => {
-                    const hex = x.toString(16);
-                    return hex.length === 1 ? '0' + hex : hex;
-                }).join('');
+                if (this.currentTool === 'eraser') {
+                    // Check eraser mode
+                    if (this.eraserMode === 'auto' && !this.hasAutoSampled) {
+                        // Auto sample color from clicked position
+                        const color = this.getAdvancedAverageColor(pos.x, pos.y, 7);
+                        this.sampledColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+                        this.hasAutoSampled = true;
+                        
+                        // Show sampled color
+                        const sampledDisplay = document.getElementById('sampledColorDisplay');
+                        sampledDisplay.style.background = this.sampledColor;
+                        sampledDisplay.classList.remove('hidden');
+                        
+                        this.showTip(`已自动取色: RGB(${color.r}, ${color.g}, ${color.b})`);
+                    } else if (this.eraserMode === 'fixed') {
+                        // Use the selected color
+                        this.sampledColor = this.currentColor;
+                        
+                        // Show current color as sampled
+                        const sampledDisplay = document.getElementById('sampledColorDisplay');
+                        sampledDisplay.style.background = this.sampledColor;
+                        sampledDisplay.classList.remove('hidden');
+                    }
+                    
+                    this.isDrawing = true;
+                    this.ctx.strokeStyle = this.sampledColor;
+                    this.ctx.lineWidth = this.brushSize;
+                    this.ctx.lineCap = 'round';
+                    this.ctx.lineJoin = 'round';
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(pos.x, pos.y);
+                    
+                } else if (this.currentTool === 'paint') {
+                    // Paint tool - always use selected color
+                    this.isDrawing = true;
+                    this.ctx.strokeStyle = this.currentColor;
+                    this.ctx.lineWidth = this.brushSize;
+                    
+                    // Apply pen type settings
+                    this.setPenType(this.penType);
+                    
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(pos.x, pos.y);
+                    
+                } else if (this.currentTool === 'colorPicker') {
+                    const color = this.getAdvancedAverageColor(pos.x, pos.y, 5);
+                    const hex = '#' + [color.r, color.g, color.b].map(x => x.toString(16).padStart(2, '0')).join('');
+                    this.currentColor = hex;
+                    document.getElementById('colorPicker').value = hex;
+                    document.getElementById('colorDisplay').style.background = hex;
+                    this.showTip(`颜色已吸取: ${hex}`);
+                }
             }
-            
+
+            draw(e) {
+                if (!this.isDrawing || (this.currentTool !== 'eraser' && this.currentTool !== 'paint')) return;
+                const pos = this.getMousePos(e);
+                this.ctx.lineTo(pos.x, pos.y);
+                this.ctx.stroke();
+            }
+
+            stopDraw() {
+                if (this.isDrawing) {
+                    this.isDrawing = false;
+                    this.hasAutoSampled = false; // Reset for next stroke
+                    this.saveHistory();
+                }
+            }
+
+            addTextElement(text, x, y) {
+                const textElement = document.createElement('div');
+                textElement.className = 'text-element';
+                textElement.style.left = `${x}px`;
+                textElement.style.top = `${y}px`;
+                textElement.style.color = this.currentColor;
+                textElement.style.fontSize = `${this.fontSize}px`;
+                textElement.style.fontFamily = 'Arial';
+                textElement.textContent = text;
+                
+                // Add resize handle
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = 'resize-handle';
+                textElement.appendChild(resizeHandle);
+                
+                // Add event listeners
+                textElement.addEventListener('mousedown', (e) => this.handleTextMouseDown(e));
+                textElement.addEventListener('dblclick', (e) => this.handleTextDoubleClick(e));
+                resizeHandle.addEventListener('mousedown', (e) => this.handleResizeMouseDown(e));
+                
+                this.canvasContainer.appendChild(textElement);
+                this.textElements.push(textElement);
+                this.saveHistory();
+            }
+
+            handleTextMouseDown(e) {
+                if (e.target.classList.contains('resize-handle')) return;
+                
+                e.stopPropagation();
+                e.preventDefault();
+                
+                this.selectTextElement(e.currentTarget);
+                this.isDraggingText = true;
+                
+                const rect = e.currentTarget.getBoundingClientRect();
+                const containerRect = this.canvasContainer.getBoundingClientRect();
+                
+                this.dragOffset = {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+
+            handleTextDoubleClick(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                const textElement = e.currentTarget;
+                this.editTextElement(textElement);
+            }
+
+            handleResizeMouseDown(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                this.isResizing = true;
+                this.selectedTextElement = e.currentTarget.parentElement;
+                
+                document.addEventListener('mousemove', this.handleResizeMouseMove.bind(this));
+                document.addEventListener('mouseup', this.handleResizeMouseUp.bind(this));
+            }
+
+            handleResizeMouseMove(e) {
+                if (!this.isResizing || !this.selectedTextElement) return;
+                
+                const rect = this.selectedTextElement.getBoundingClientRect();
+                const containerRect = this.canvasContainer.getBoundingClientRect();
+                
+                const newWidth = e.clientX - rect.left;
+                const newHeight = e.clientY - rect.top;
+                
+                // Calculate new font size based on resize
+                const currentFontSize = parseInt(this.selectedTextElement.style.fontSize);
+                const newFontSize = Math.max(10, Math.min(100, currentFontSize + (newWidth - rect.width) / 2));
+                
+                this.selectedTextElement.style.fontSize = `${newFontSize}px`;
+            }
+
+            handleResizeMouseUp() {
+                this.isResizing = false;
+                document.removeEventListener('mousemove', this.handleResizeMouseMove.bind(this));
+                document.removeEventListener('mouseup', this.handleResizeMouseUp.bind(this));
+                this.saveHistory();
+            }
+
+            selectTextElement(element) {
+                this.deselectAllText();
+                element.classList.add('selected');
+                this.selectedTextElement = element;
+            }
+
+            deselectAllText() {
+                this.textElements.forEach(element => {
+                    element.classList.remove('selected', 'editing');
+                });
+                this.selectedTextElement = null;
+            }
+
+            editTextElement(element) {
+                element.classList.add('editing');
+                const currentText = element.textContent;
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = currentText;
+                input.style.cssText = `
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: 2px solid #28a745;
+                    border-radius: 4px;
+                    padding: 5px;
+                    font-size: ${element.style.fontSize};
+                    font-family: ${element.style.fontFamily};
+                    color: ${element.style.color};
+                    background: white;
+                    outline: none;
+                `;
+                
+                element.innerHTML = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+                
+                const finishEdit = () => {
+                    const newText = input.value.trim();
+                    if (newText) {
+                        element.textContent = newText;
+                        element.style.color = this.currentColor;
+                        element.style.fontSize = `${this.fontSize}px`;
+                        
+                        // Re-add resize handle
+                        const resizeHandle = document.createElement('div');
+                        resizeHandle.className = 'resize-handle';
+                        element.appendChild(resizeHandle);
+                        resizeHandle.addEventListener('mousedown', (e) => this.handleResizeMouseDown(e));
+                        
+                        this.saveHistory();
+                    } else {
+                        element.remove();
+                        this.textElements = this.textElements.filter(el => el !== element);
+                    }
+                };
+                
+                input.addEventListener('blur', finishEdit);
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        finishEdit();
+                    } else if (e.key === 'Escape') {
+                        element.textContent = currentText;
+                        element.classList.remove('editing');
+                        
+                        // Re-add resize handle
+                        const resizeHandle = document.createElement('div');
+                        resizeHandle.className = 'resize-handle';
+                        element.appendChild(resizeHandle);
+                        resizeHandle.addEventListener('mousedown', (e) => this.handleResizeMouseDown(e));
+                    }
+                });
+            }
+
+            zoom(delta) {
+                const oldZoom = this.zoomLevel;
+                this.zoomLevel = Math.max(0.25, Math.min(4, this.zoomLevel + delta));
+                
+                // Update container transform
+                this.canvasContainer.style.transform = `scale(${this.zoomLevel})`;
+                
+                // Adjust container size to prevent clipping
+                const newWidth = this.canvas.width * this.zoomLevel;
+                const newHeight = this.canvas.height * this.zoomLevel;
+                this.canvasContainer.style.width = `${newWidth}px`;
+                this.canvasContainer.style.height = `${newHeight}px`;
+                
+                // Update zoom display
+                document.getElementById('zoomLevel').textContent = `${Math.round(this.zoomLevel * 100)}%`;
+                
+                // Adjust scroll to keep center point
+                if (oldZoom !== this.zoomLevel) {
+                    const wrapper = this.canvasWrapper;
+                    const zoomRatio = this.zoomLevel / oldZoom;
+                    const centerX = wrapper.scrollLeft + wrapper.clientWidth / 2;
+                    const centerY = wrapper.scrollTop + wrapper.clientHeight / 2;
+                    
+                    wrapper.scrollLeft = centerX * zoomRatio - wrapper.clientWidth / 2;
+                    wrapper.scrollTop = centerY * zoomRatio - wrapper.clientHeight / 2;
+                }
+                
+                this.showTip(`缩放: ${Math.round(this.zoomLevel * 100)}%`);
+            }
+
+            zoomReset() {
+                this.zoomLevel = 1;
+                this.canvasContainer.style.transform = 'scale(1)';
+                this.canvasContainer.style.width = `${this.canvas.width}px`;
+                this.canvasContainer.style.height = `${this.canvas.height}px`;
+                document.getElementById('zoomLevel').textContent = '100%';
+                this.centerCanvas();
+                this.showTip('恢复原始大小');
+            }
+
             saveHistory() {
                 this.historyStep++;
-                if (this.historyStep < this.history.length) {
-                    this.history.length = this.historyStep;
-                }
+                this.history = this.history.slice(0, this.historyStep);
                 this.history.push(this.canvas.toDataURL());
             }
-            
+
             undo() {
                 if (this.historyStep > 0) {
                     this.historyStep--;
@@ -1167,96 +1226,87 @@
                         this.ctx.drawImage(img, 0, 0);
                     };
                     img.src = this.history[this.historyStep];
+                    this.showTip('已撤销');
                 }
             }
-            
-            clearEdits() {
+
+            clear() {
                 if (this.originalImage) {
                     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                     this.ctx.drawImage(this.originalImage, 0, 0);
-                    this.clearTextElements();
                     this.saveHistory();
-                    this.showTip('已恢复原图');
+                    this.sampledColor = null;
+                    document.getElementById('sampledColorDisplay').classList.add('hidden');
+                    this.showTip('已清空编辑');
                 }
             }
-            
-            uploadNewImage() {
-                document.getElementById('fileInput').click();
-            }
-            
-            downloadImage() {
-                // Create temporary canvas to merge everything
+
+            download() {
+                // Create a temporary canvas to include text elements
                 const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
                 tempCanvas.width = this.canvas.width;
                 tempCanvas.height = this.canvas.height;
-                const tempCtx = tempCanvas.getContext('2d');
                 
-                // Draw main canvas
+                // Draw the main canvas
                 tempCtx.drawImage(this.canvas, 0, 0);
                 
                 // Draw text elements
                 this.textElements.forEach(textElement => {
-                    const textContent = textElement.querySelector('.text-content');
-                    const rect = textElement.getBoundingClientRect();
-                    const canvasRect = this.canvas.getBoundingClientRect();
-                    
-                    const x = rect.left - canvasRect.left;
-                    const y = rect.top - canvasRect.top + parseInt(window.getComputedStyle(textElement).fontSize);
-                    
-                    tempCtx.fillStyle = window.getComputedStyle(textElement).color;
-                    tempCtx.font = `${window.getComputedStyle(textElement).fontSize} ${window.getComputedStyle(textElement).fontFamily}`;
-                    tempCtx.fillText(textContent.textContent, x, y);
+                    if (!textElement.classList.contains('editing')) {
+                        const rect = textElement.getBoundingClientRect();
+                        const containerRect = this.canvasContainer.getBoundingClientRect();
+                        
+                        const x = (rect.left - containerRect.left) / this.zoomLevel;
+                        const y = (rect.top - containerRect.top) / this.zoomLevel + parseInt(textElement.style.fontSize);
+                        
+                        tempCtx.fillStyle = textElement.style.color;
+                        tempCtx.font = `${textElement.style.fontSize} ${textElement.style.fontFamily}`;
+                        tempCtx.fillText(textElement.textContent, x, y);
+                    }
                 });
                 
-                // Download
                 const link = document.createElement('a');
-                link.download = 'edited-image.png';
+                link.download = `edited_${Date.now()}.png`;
                 link.href = tempCanvas.toDataURL();
                 link.click();
-                
                 this.showTip('图片已下载');
             }
         }
+
+        // Start the editor
+        const editor = new ImageEditor();
         
-        // Initialize the editor
-        const editor = new ImageTextEditor();
+        // Initialize pen tool
+        editor.setPenType('pen');
         
-        // Global mouse events for dragging and resizing
-        document.addEventListener('mousemove', (e) => {
-            if (editor.isDragging && editor.selectedText) {
-                const containerRect = editor.canvasContainer.getBoundingClientRect();
-                const x = e.clientX - containerRect.left - editor.dragOffset.x;
-                const y = e.clientY - containerRect.top - editor.dragOffset.y;
-                
-                editor.selectedText.style.left = `${Math.max(0, x)}px`;
-                editor.selectedText.style.top = `${Math.max(0, y)}px`;
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Z for undo
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                editor.undo();
             }
-            
-            if (editor.isResizing && editor.selectedText) {
-                const textContent = editor.selectedText.querySelector('.text-content');
-                const rect = editor.selectedText.getBoundingClientRect();
-                const containerRect = editor.canvasContainer.getBoundingClientRect();
-                
-                const currentFontSize = parseInt(window.getComputedStyle(editor.selectedText).fontSize);
-                let newSize = currentFontSize;
-                
-                if (editor.resizeHandle.classList.contains('bottom-right')) {
-                    const distance = Math.sqrt(
-                        Math.pow(e.clientX - rect.left, 2) + 
-                        Math.pow(e.clientY - rect.top, 2)
-                    );
-                    newSize = Math.max(10, Math.min(100, distance / 5));
-                }
-                
-                editor.selectedText.style.fontSize = `${newSize}px`;
-                document.getElementById('fontSize').value = newSize;
+            // Spacebar for temporary drag mode
+            if (e.key === ' ' && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                editor.setTool('drag');
+            }
+            // Number keys for quick zoom
+            if (e.key >= '1' && e.key <= '4' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                const zoomLevels = [0.25, 0.5, 1, 2];
+                const targetZoom = zoomLevels[parseInt(e.key) - 1];
+                editor.zoomLevel = 0;
+                editor.zoom(targetZoom);
             }
         });
         
-        document.addEventListener('mouseup', () => {
-            editor.isDragging = false;
-            editor.isResizing = false;
-            editor.resizeHandle = null;
+        // Release spacebar drag
+        document.addEventListener('keyup', (e) => {
+            if (e.key === ' ' && editor.currentTool === 'drag') {
+                editor.setTool('eraser');
+            }
         });
     </script>
 </body>
